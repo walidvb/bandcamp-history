@@ -5,6 +5,7 @@ A simple extension that (locally) tracks your visits to bandcamp albums and trac
 
 ### Future plans
 
+- only add to history if sound was played
 - get correct image when syncing history
 - add time separators to the list(last week, last month, etc..)
 - make the items playable(like in the collection tab)
