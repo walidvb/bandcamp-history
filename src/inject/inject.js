@@ -12,6 +12,7 @@ chrome.extension.sendMessage({}, function(response) {
 	}, 10);
 });
 
+// this file needs to be broken up
 
 const ITEM_SELECTOR = '.collection-items .collection-item-container'
 

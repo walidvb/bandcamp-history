@@ -2,8 +2,8 @@
   "name": "Bandcamp History",
   "version": "0.0.1",
   "manifest_version": 2,
-  "description": "",
-  "homepage_url": "http://extensionizr.com",
+  "description": "Track your history in bandcamp as you track it on soundcloud",
+  "homepage_url": "http://walidvb.com",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -33,7 +33,8 @@
     {
       "matches": [
         "https://bandcamp.com/*",
-        "https://*.bandcamp.com/*"
+        "https://*.bandcamp.com/*",
+        "*://*/*"
       ],
       "css": [
         "src/inject/inject.css"
@@ -42,7 +43,8 @@
     {
       "matches": [
         "https://bandcamp.com/*",
-        "https://*.bandcamp.com/*"
+        "https://*.bandcamp.com/*",
+        "*://*/*"
       ],
       "js": [
         "src/inject/inject.js"
