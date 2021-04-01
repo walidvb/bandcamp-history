@@ -105,7 +105,7 @@ function addToHistory(){
 		});
 }
 
-const getValueFor = (property) => document.querySelector(`[property="${property}"]`)?.attributes?.content?.value
+const getValueFor = (property) => document.querySelector(`[property="${property}"]`)?.attributes?.content?.value?.trim?.()
 function getMetadata(){
 	const obj = ['og:url', 'og:title', 'og:description', 'og:image'].reduce((prev, curr) => {
 		return {
