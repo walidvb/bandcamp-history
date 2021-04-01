@@ -44,9 +44,15 @@ function showHistory(){
 		items.forEach(i => contentContainer.appendChild(generateItem(i)))
 	})
 
-	function generateItem() {
+	function generateItem({ image, title, artist, url }) {
 		const template = document.querySelector(ITEM_SELECTOR)
 		const clone = template.cloneNode(true)
+		clone.style['min-height'] = 'initial'
+		clone.querySelector('img.collection-item-art').src = image
+		clone.querySelector('.collection-item-title').innerText = title
+		clone.querySelector('.collection-item-artist').innerText = artist
+		clone.querySelector('.item-link').href = url
+		clone.querySelector('.collection-item-details-container').remove()
 		return clone
 	}
 }
@@ -54,17 +60,19 @@ function showHistory(){
 function addToHistory(){
 	chrome.storage.sync.get(['items'], function ({items: previous} = { items: [] }) {
 		// prevent duplicates
-		const items = [...previous, getMetadata()]
+		const items = [getMetadata(), ...previous]
 		chrome.storage.sync.set({ items });
 	});
 }
 
 function getMetadata(){
 	const getValueFor = (property) => document.querySelector(`[property="${property}"]`).attributes.content.value
-	return ['og:url', 'og:title', 'og:description', 'og:image'].reduce((prev, curr) => {
+	const obj = ['og:url', 'og:title', 'og:description', 'og:image'].reduce((prev, curr) => {
 		return {
 			...prev,
 			[curr.replace('og:', '')]: getValueFor(curr)
 		}
 	}, {})
+	const [title, artist] = obj.title.split(', by')
+	return { ...obj, title, artist }
 }
