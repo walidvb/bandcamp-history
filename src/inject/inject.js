@@ -1,3 +1,4 @@
+
 chrome.extension.sendMessage({}, function(response) {
 
 	var readyStateCheckInterval = setInterval(function() {
@@ -19,7 +20,11 @@ chrome.extension.sendMessage({}, function(response) {
 
 const ITEM_SELECTOR = '.collection-items .collection-item-container'
 
+const isOwnerPage = () => Boolean(document.querySelector('.fan-bio.owner'))
 function addMenuItem(){
+	if (!isOwnerPage()){
+		return
+	}
 	const lastTabItem = document.querySelector('#grid-tabs li:not(.active)')
 	const clone = lastTabItem.cloneNode(true)
 	lastTabItem.parentElement.appendChild(clone)
@@ -33,7 +38,7 @@ function showHistory(){
 	document.querySelector('#grid-tabs li.active').classList.remove('active')
 	document.querySelector('#grid-tabs li#bc-history').classList.add('active')
 	chrome.storage.local.get(['items'], function ({ items } ) {
-		console.log(items)
+		// TODO: fix navigating multiple times
 		const tabsWrapper = document.querySelector('#grids')
 		const template = document.querySelector('#grids .grid')
 		const content = template.cloneNode(true)
@@ -93,5 +98,6 @@ function getMetadata(){
 		}
 	}, {})
 	const [title, artist] = obj.title.split(', by')
-	return { ...obj, title, artist }
+	const lastVisitTime = new Date()
+	return { ...obj, title, artist, lastVisitTime }
 }
