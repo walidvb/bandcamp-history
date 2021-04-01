@@ -20,17 +20,18 @@ chrome.extension.sendMessage({}, function(response) {
 const ITEM_SELECTOR = '.collection-items .collection-item-container'
 
 function addMenuItem(){
-	const lastTabItem = document.querySelector('#grid-tabs li:last-child')
+	const lastTabItem = document.querySelector('#grid-tabs li:not(.active)')
 	const clone = lastTabItem.cloneNode(true)
 	lastTabItem.parentElement.appendChild(clone)
 	clone.querySelector('.tab-title').innerText = 'history'
-	// TODO: change ids
+	clone.id = 'bc-history'
 	clone.onmousedown = showHistory
 }
 
 let contentContainer
 function showHistory(){
-	console.log("items")
+	document.querySelector('#grid-tabs li.active').classList.remove('active')
+	document.querySelector('#grid-tabs li#bc-history').classList.add('active')
 	chrome.storage.local.get(['items'], function ({ items } ) {
 		console.log(items)
 		const tabsWrapper = document.querySelector('#grids')
@@ -40,6 +41,8 @@ function showHistory(){
 		content.id = 'bc-history'
 		tabsWrapper.appendChild(content)
 		contentContainer = content.querySelector('.collection-grid')
+		content.querySelector('.expand-container').remove()
+		document.querySelector('.owner-controls').style.display = 'none'
 		contentContainer.innerHTML = ''
 		if(items){
 			items.forEach(i => contentContainer.appendChild(generateItem(i)))
@@ -67,8 +70,16 @@ function showHistory(){
 
 function addToHistory(){
 	chrome.storage.local.get(['items'], function ({items: previous = []}) {
-		// prevent duplicates
-		const items = [getMetadata(), ...previous]
+		const metadata = getMetadata()
+		if(!metadata.artist){
+			return
+		}
+		const compare = ({ url }) => metadata.url === url
+		const index = previous.indexOf(previous.find(compare))
+		if (index > 0 && index < 20){
+			return
+		}
+		const items = [metadata, ...previous]
 		chrome.storage.local.set({ items });
 	});
 }
