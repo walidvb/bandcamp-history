@@ -30,7 +30,9 @@ function addMenuItem(){
 	lastTabItem.parentElement.appendChild(clone)
 	clone.querySelector('.tab-title').innerText = 'history'
 	clone.id = 'bc-history'
-	clone.onmousedown = showHistory
+	clone.attributes['data-grid-id'].value = 'bc-history-grid'
+	clone.attributes['data-tab'].value = 'bc-history'
+	clone.onmouseup = showHistory
 }
 
 let contentContainer
@@ -44,6 +46,7 @@ function showHistory(){
 		const content = template.cloneNode(true)
 		document.querySelector('#grids .grid.active').classList.remove('active')
 		content.id = 'bc-history'
+		content.classList.add('active')
 		tabsWrapper.appendChild(content)
 		contentContainer = content.querySelector('.collection-grid')
 		content.querySelector('.expand-container').remove()
@@ -52,8 +55,22 @@ function showHistory(){
 		if(items){
 			items.forEach(i => contentContainer.appendChild(generateItem(i)))
 		}
+		contentContainer.insertAdjacentElement('beforeEnd', linkToOptions())
 	})
 
+	function linkToOptions(){
+		const a = document.createElement('button')
+		a.onmousedown = () => {
+			console.log('tes')
+			chrome.runtime.sendMessage({ action: "openOptionsPage" });
+		}
+		a.innerText = "sync my history"
+		a.className = "show-more"
+		const div = document.createElement('div')
+		div.className = 'expand-container show-button'
+		div.append(a)
+		return div
+	}
 	function generateItem({ image, title, artist, url }) {
 		const template = document.querySelector(ITEM_SELECTOR)
 		const clone = template.cloneNode(true)
@@ -62,9 +79,9 @@ function showHistory(){
 		clone.querySelector('.collection-item-title').innerText = title
 		clone.querySelector('.collection-item-artist').innerText = artist
 		clone.querySelector('.item-link').href = url
-		clone.querySelector('.collection-item-details-container').remove()
+		clone.querySelector('.collection-item-details-container')?.remove()
 		// clone.querySelector('.item_link_play').remove()
-		clone.querySelector('.drag-thumb').remove()
+		clone.querySelector('.drag-thumb')?.remove()
 		const clicker = clone.querySelector('.track_play_auxiliary')
 		clicker.classList.remove('track_play_auxiliary')
 		clicker.href = url
