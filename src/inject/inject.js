@@ -189,11 +189,21 @@ function addMenuItem(){
 	const clone = lastTabItem.cloneNode(true)
 	lastTabItem.parentElement.appendChild(clone)
 	clone.querySelector('.tab-title').innerText = 'history'
+	// TODO: change ids
 	clone.onmousedown = showHistory
 }
 
 function showHistory(){
-	console.log('asd')
+	console.log("items")
+	chrome.storage.sync.get(['items'], function ({ items }) {
+		console.log(items)
+		const tabsWrapper = document.querySelector('#grids')
+		const template = document.querySelector('#grids .grid.active')
+		const content = template.cloneNode(true)
+		template.classList.remove('active')
+		content.id = 'bc-history'
+		tabsWrapper.appendChild(content)
+	})
 }
 
 function addToHistory(){
