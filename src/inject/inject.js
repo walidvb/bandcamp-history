@@ -189,6 +189,11 @@ function addMenuItem(){
 	const clone = lastTabItem.cloneNode(true)
 	lastTabItem.parentElement.appendChild(clone)
 	clone.querySelector('.tab-title').innerText = 'history'
+	clone.onmousedown = showHistory
+}
+
+function showHistory(){
+	console.log('asd')
 }
 
 function addToHistory(){
