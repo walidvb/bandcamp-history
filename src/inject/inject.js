@@ -31,7 +31,7 @@ function addMenuItem(){
 let contentContainer
 function showHistory(){
 	console.log("items")
-	chrome.storage.sync.get(['items'], function ({ items }) {
+	chrome.storage.local.get(['items'], function ({ items } ) {
 		console.log(items)
 		const tabsWrapper = document.querySelector('#grids')
 		const template = document.querySelector('#grids .grid')
@@ -41,7 +41,9 @@ function showHistory(){
 		tabsWrapper.appendChild(content)
 		contentContainer = content.querySelector('.collection-grid')
 		contentContainer.innerHTML = ''
-		items.forEach(i => contentContainer.appendChild(generateItem(i)))
+		if(items){
+			items.forEach(i => contentContainer.appendChild(generateItem(i)))
+		}
 	})
 
 	function generateItem({ image, title, artist, url }) {
@@ -53,15 +55,21 @@ function showHistory(){
 		clone.querySelector('.collection-item-artist').innerText = artist
 		clone.querySelector('.item-link').href = url
 		clone.querySelector('.collection-item-details-container').remove()
+		// clone.querySelector('.item_link_play').remove()
+		clone.querySelector('.drag-thumb').remove()
+		const clicker = clone.querySelector('.track_play_auxiliary')
+		clicker.classList.remove('track_play_auxiliary')
+		clicker.href = url
+
 		return clone
 	}
 }
 
 function addToHistory(){
-	chrome.storage.sync.get(['items'], function ({items: previous} = { items: [] }) {
+	chrome.storage.local.get(['items'], function ({items: previous = []}) {
 		// prevent duplicates
 		const items = [getMetadata(), ...previous]
-		chrome.storage.sync.set({ items });
+		chrome.storage.local.set({ items });
 	});
 }
 
