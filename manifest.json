@@ -1,0 +1,51 @@
+{
+  "name": "Bandcamp History",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "",
+  "homepage_url": "http://extensionizr.com",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "default_locale": "en",
+  "background": {
+    "page": "src/bg/background.html",
+    "persistent": false
+  },
+  "permissions": [
+    "history",
+    "storage",
+    "*://*/"
+  ],
+  "commands": {
+    "Ctrl+J": {
+      "suggested_key": {
+        "default": "Ctrl+J",
+        "mac": "Command+J"
+      },
+      "description": "Ctrl+J."
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://bandcamp.com/*",
+        "https://*.bandcamp.com/*"
+      ],
+      "css": [
+        "src/inject/inject.css"
+      ]
+    },
+    {
+      "matches": [
+        "https://bandcamp.com/*",
+        "https://*.bandcamp.com/*"
+      ],
+      "js": [
+        "src/inject/inject.js"
+      ]
+    }
+  ]
+}
