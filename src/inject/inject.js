@@ -5,13 +5,8 @@ chrome.extension.sendMessage({}, function(response) {
 	if (document.readyState === "complete") {
 		clearInterval(readyStateCheckInterval);
 		
-		// ----------------------------------------------------------
-		// This part of the script triggers when page is done loading
-		console.log("Hello. This message was sent from scripts/inject.js");
 		addToHistory()
 		addMenuItem()
-		console.log(getMetadata(document))
-		// ----------------------------------------------------------
 
 	}
 	}, 10);
@@ -91,23 +86,26 @@ function showHistory(){
 }
 
 function addToHistory(){
-	chrome.storage.local.get(['items'], function ({items: previous = []}) {
-		const metadata = getMetadata()
-		if(!metadata.artist){
-			return
-		}
-		const compare = ({ url }) => metadata.url === url
-		const index = previous.indexOf(previous.find(compare))
-		if (index > 0 && index < 20){
-			return
-		}
-		const items = [metadata, ...previous]
-		chrome.storage.local.set({ items });
-	});
+		const isBandcamp = getValueFor('twitter:site') === '@bandcamp'
+		if (!isBandcamp) return
+		chrome.storage.local.get(['items'], function ({items: previous = []}) {
+			const metadata = getMetadata()
+			if(!metadata){
+				return
+			}
+			const compare = ({ url }) => metadata.url === url
+			// only add if not in last 20
+			const index = previous.indexOf(previous.find(compare))
+			if (index > 0 && index < 20){
+				return
+			}
+			const items = [metadata, ...previous]
+			chrome.storage.local.set({ items });
+		});
 }
 
+const getValueFor = (property) => document.querySelector(`[property="${property}"]`)?.attributes?.content?.value
 function getMetadata(){
-	const getValueFor = (property) => document.querySelector(`[property="${property}"]`).attributes.content.value
 	const obj = ['og:url', 'og:title', 'og:description', 'og:image'].reduce((prev, curr) => {
 		return {
 			...prev,
